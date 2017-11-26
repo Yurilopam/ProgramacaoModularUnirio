@@ -59,18 +59,21 @@ public class DisciplinaController {
 	 *            escolar
 	 * 
 	 */
-	public void encontrarNotaESituacaoDisciplinas(String historicoRefinado) {
+	public void encontrarAtributosDisciplinas(String historicoRefinado) {
 
 		leitorDeHistorico = new Scanner(historicoRefinado);
 		String codigo;
 		Disciplina disciplina;
-
+		int reprovacoes = 0;
+		
+		
 		while (leitorDeHistorico.hasNextLine()) {
 			String linhaAtual = leitorDeHistorico.nextLine();
 			String notaDisciplina;
 			String situacaoDisciplina;
 			leitor = new Scanner(linhaAtual);
 			codigo = leitor.next();
+			int totalDeReprovacoes = 0;
 			for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
 				if (codigo.equals(codigoChave)) {
 					disciplina = informacaoesDeDisciplinas.get(codigo);
@@ -81,15 +84,18 @@ public class DisciplinaController {
 															   .concat(leitorDeHistorico.nextLine()).split(" ");
 						notaDisciplina = recuperarNotaNoArray(tamanhoDoNomeDisciplina, separadorDeStatus);
 						situacaoDisciplina = separadorDeStatus[separadorDeStatus.length - 1];
+						totalDeReprovacoes = reprovacoes + recuperarTotalDeReprovacoes(tamanhoDoNomeDisciplina, separadorDeStatus) + disciplina.getTotalDeReprovacoes();
 					} else {
 						String[] separadorNomeDisciplina = disciplina.getNome().split(" ");
 						int tamanhoDoNomeDisciplina = separadorNomeDisciplina.length;
 						String[] separadorDeStatus = linhaAtual.split(" ");
 						notaDisciplina = recuperarNotaNoArray(tamanhoDoNomeDisciplina, separadorDeStatus);
 						situacaoDisciplina = separadorDeStatus[separadorDeStatus.length - 1];
+						totalDeReprovacoes = reprovacoes + recuperarTotalDeReprovacoes(tamanhoDoNomeDisciplina, separadorDeStatus) + disciplina.getTotalDeReprovacoes();
 					}
 					disciplina.setMedia(notaDisciplina);
 					disciplina.setSituacao(situacaoDisciplina);
+					disciplina.setTotalDeReprovacoes(totalDeReprovacoes);
 				} 
 			}
 		}
@@ -127,7 +133,26 @@ public class DisciplinaController {
 			return false;
 		}
 	}
-
+	
+	
+	private int recuperarTotalDeReprovacoes(int tamanhoDoNomeDisciplina, String[] separadorDeStatus) {
+		if (disciplinaSemNota(tamanhoDoNomeDisciplina, separadorDeStatus)) {
+			if (separadorDeStatus[tamanhoDoNomeDisciplina + 4].equals("REP") || 
+					separadorDeStatus[tamanhoDoNomeDisciplina + 4].equals("REF")) {
+				return 1;
+			} else {
+				return 0;
+			}
+		} else {
+			if (separadorDeStatus[tamanhoDoNomeDisciplina + 5].equals("REP") || 
+					separadorDeStatus[tamanhoDoNomeDisciplina + 5].equals("REF")) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+	}
+	
 	
 	public HashMap<String, Disciplina> getInformacaoesDeDisciplinas() {
 		return informacaoesDeDisciplinas;

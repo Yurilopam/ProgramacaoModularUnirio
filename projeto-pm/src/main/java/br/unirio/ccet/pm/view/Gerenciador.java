@@ -25,14 +25,15 @@ public class Gerenciador {
 		String historicoEscolarRefinado = pdf.refinadorDeConteudoDoHistoricoEscolar(historicoEscolarExtraido,
 				pdf.recuperarIndexInicial(historicoEscolarDocumento), pdf.recuperarIndexFinal(historicoEscolarDocumento));
 		disciplinaController.importarListaDisciplinas(LISTA_DISCIPLINA_PATH.toString());
-		disciplinaController.encontrarNotaESituacaoDisciplinas(historicoEscolarRefinado);
+		disciplinaController.encontrarAtributosDisciplinas(historicoEscolarRefinado);
 		
 		
 		for (String codigo : disciplinaController.getInformacaoesDeDisciplinas().keySet()) {
 			System.out.println(disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getCodigo() + " " + 
 					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getNome() + " " + 
 					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getMedia() + " " + 
-					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getSituacao());
+					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getSituacao() + " " + 
+					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getTotalDeReprovacoes());
 		}
 	}
 }

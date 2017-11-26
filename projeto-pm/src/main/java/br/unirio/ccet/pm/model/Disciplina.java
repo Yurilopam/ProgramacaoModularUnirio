@@ -18,6 +18,7 @@ public class Disciplina {
 	private String nome;
 	private String media;
 	private String situacao;
+	private int totalDeReprovacoes;
 	
 	public String getCodigo() {
 		return codigo;
@@ -35,6 +36,14 @@ public class Disciplina {
 		this.nome = nome;
 	}
 
+	public String getMedia() {
+		return media;
+	}
+
+	public void setMedia(String media) {
+		this.media = media;
+	}
+			
 	public String getSituacao() {
 		return situacao;
 	}
@@ -43,12 +52,12 @@ public class Disciplina {
 		this.situacao = situacao;
 	}
 
-	public String getMedia() {
-		return media;
+	public int getTotalDeReprovacoes() {
+		return totalDeReprovacoes;
 	}
 
-	public void setMedia(String media) {
-		this.media = media;
+	public void setTotalDeReprovacoes(int totalDeReprovacoes) {
+		this.totalDeReprovacoes = totalDeReprovacoes;
 	}
 
 }
