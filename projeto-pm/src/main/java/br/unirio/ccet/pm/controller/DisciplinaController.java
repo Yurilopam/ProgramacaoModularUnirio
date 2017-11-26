@@ -9,6 +9,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import br.unirio.ccet.pm.model.Disciplina;
 
+/**
+ * 
+ * @author grupoPM
+ *
+ */
 public class DisciplinaController {
 	
 	private HashMap<String, Disciplina> informacaoesDeDisciplinas = new HashMap<String, Disciplina>();
@@ -65,7 +70,6 @@ public class DisciplinaController {
 		String codigo;
 		Disciplina disciplina;
 		int reprovacoes = 0;
-		
 		
 		while (leitorDeHistorico.hasNextLine()) {
 			String linhaAtual = leitorDeHistorico.nextLine();

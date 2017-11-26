@@ -8,6 +8,11 @@ import java.nio.file.Paths;
 import br.unirio.ccet.pm.controller.DisciplinaController;
 import br.unirio.ccet.pm.util.ManipuladorDeHistorico;
 
+/**
+ * 
+ * @author grupoPM
+ *
+ */
 public class Gerenciador {
 
 	private static final String LISTA_DE_DISCIPLINAS_TXT = "lista de disciplinas.txt";

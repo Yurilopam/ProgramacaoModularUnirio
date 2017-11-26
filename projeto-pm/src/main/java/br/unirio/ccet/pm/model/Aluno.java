@@ -3,6 +3,11 @@ package br.unirio.ccet.pm.model;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 
+ * @author grupoPM
+ *
+ */
 public class Aluno {
 
 	/**
@@ -10,18 +15,24 @@ public class Aluno {
 	 * 
 	 * */
 	@Getter @Setter	
-	private static String nome;
+	private String nome;
+	
 	@Getter @Setter
-	private static String anoEntrada;
+	private String anoEntrada;
+	
 	@Getter @Setter
-	private static String periodoAtual;
+	private String periodoAtual;
+	
 	@Getter @Setter
-	private static boolean foiJubilado;
+	private boolean foiJubilado;
+	
 	@Getter @Setter
-	private static int CRA;
+	private int CRA;
+	
 	@Getter @Setter
-	private static boolean formarNoPrazo; //verificar se ele pode se formar no prazo ou não
+	private boolean formarNoPrazo; //verificar se ele pode se formar no prazo ou não
+	
 	@Getter @Setter
-	private static int qtdeMateriasAprovadas; //contador para casos de integralização
+	private int qtdeMateriasAprovadas; //contador para casos de integralização
 
 }

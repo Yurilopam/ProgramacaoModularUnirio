@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>projeto.unirio</groupId>
   <artifactId>projeto-pm</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
   <name>Programação Modular :: JAR</name>
   
   
@@ -48,6 +48,12 @@
 	    <artifactId>preflight</artifactId>
 	    <version>2.0.7</version>
 	    <scope>provided</scope>
+	</dependency>
+	<dependency> 
+		<groupId>org.projectlombok</groupId> 
+		<artifactId>lombok</artifactId> 
+		<version>1.16.16</version> 
+		<scope>provided</scope> 
 	</dependency>
   </dependencies>
   

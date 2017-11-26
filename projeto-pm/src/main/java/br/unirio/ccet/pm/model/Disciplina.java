@@ -1,5 +1,8 @@
 package br.unirio.ccet.pm.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Classe para reconhecimento de informações referentes às disciplinas no
  * Historico Escolar.
@@ -14,50 +17,19 @@ public class Disciplina {
 	 * Atributos da classe
 	 * 
 	 */
+	@Getter @Setter
 	private String codigo;
-	private String nome;
-	private String media;
-	private String situacao;
-	private int totalDeReprovacoes;
 	
-	public String getCodigo() {
-		return codigo;
-	}
-
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getMedia() {
-		return media;
-	}
-
-	public void setMedia(String media) {
-		this.media = media;
-	}
-			
-	public String getSituacao() {
-		return situacao;
-	}
-
-	public void setSituacao(String situacao) {
-		this.situacao = situacao;
-	}
-
-	public int getTotalDeReprovacoes() {
-		return totalDeReprovacoes;
-	}
-
-	public void setTotalDeReprovacoes(int totalDeReprovacoes) {
-		this.totalDeReprovacoes = totalDeReprovacoes;
-	}
+	@Getter @Setter
+	private String nome;
+	
+	@Getter @Setter
+	private String media;
+	
+	@Getter @Setter
+	private String situacao;
+	
+	@Getter @Setter
+	private int totalDeReprovacoes;
 
 }
