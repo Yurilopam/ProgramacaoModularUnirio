@@ -1,14 +1,10 @@
-package br.unirio.ccet.pm.view;
+package br.unirio.ccet.pm.util;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
-
-import br.unirio.ccet.pm.controller.DisciplinaController;
 
 /**
  * Classe destinada a ler, refinar e interpretar o histórico escolar do aluno
@@ -16,29 +12,11 @@ import br.unirio.ccet.pm.controller.DisciplinaController;
  * @author grupoPM
  * 
  */
-public class LeitorDeHistorico {
-
-	private static final String LISTA_DE_DISCIPLINAS_TXT = "lista de disciplinas.txt";
-	private static final String HISTORICO_ESCOLAR_CR_APROVADOS_PDF = "historicoEscolarCRAprovados.pdf";
-	private static final Path LISTA_DISCIPLINA_PATH = Paths.get(System.getProperty("user.dir"), LISTA_DE_DISCIPLINAS_TXT);
-	private static final Path HISTORIO_ESCOLAR_PATH = Paths.get(System.getProperty("user.dir"), HISTORICO_ESCOLAR_CR_APROVADOS_PDF);
-
-	public static void main(String[] args) throws IOException {
-		final File historicoEscolarDocumento = new File(HISTORIO_ESCOLAR_PATH.toString());
-		DisciplinaController disciplinaController = new DisciplinaController();
-
-		String historicoEscolarExtraido = extrairHistoricoEscolar(historicoEscolarDocumento);
-		String historicoEscolarRefinado = refinadorDeConteudoDoHistoricoEscolar(historicoEscolarExtraido,
-				recuperarIndexInicial(historicoEscolarDocumento), recuperarIndexFinal(historicoEscolarDocumento));
-		disciplinaController.importarListaDisciplinas(LISTA_DISCIPLINA_PATH.toString());
-		disciplinaController.encontrarAtributosDasDisciplinas(historicoEscolarRefinado);
-		for (String codigo : disciplinaController.getInformacaoesDeDisciplinas().keySet()) {
-			System.out.println(disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getCodigo() + " " + 
-					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getNome() + " " + 
-					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getMedia());
-		}
-	}
-
+public class ManipuladorDeHistorico {
+	private static final String MARCO_INDICE_INICIAL = "Situação Local\r\n";
+	private static final String MARCO_INDICE_FINAL = "Geral";
+	
+	
 	/**
 	 * Método utilizado para recuperar o index inicial do doc
 	 * 
@@ -46,7 +24,7 @@ public class LeitorDeHistorico {
 	 * @return indexComeco
 	 * @throws IOException
 	 */
-	public static int recuperarIndexInicial(File historicoEscolarDoc) throws IOException {
+	public int recuperarIndexInicial(File historicoEscolarDoc) throws IOException {
 		int indexComeco;
 		ArrayList<Integer> indexesComecoEFimDasMaterias = recuperarIndexesComecoEFim(historicoEscolarDoc);
 		indexComeco = indexesComecoEFimDasMaterias.get(0);
@@ -60,7 +38,7 @@ public class LeitorDeHistorico {
 	 * @return indexFim
 	 * @throws IOException
 	 */
-	public static int recuperarIndexFinal(File historicoEscolarDoc) throws IOException {
+	public int recuperarIndexFinal(File historicoEscolarDoc) throws IOException {
 		int indexFim;
 		ArrayList<Integer> indexesComecoEFimDasMaterias = recuperarIndexesComecoEFim(historicoEscolarDoc);
 		indexFim = indexesComecoEFimDasMaterias.get(1);
@@ -74,7 +52,7 @@ public class LeitorDeHistorico {
 	 * @return indexesComecoEFimDasMaterias
 	 * @throws IOException
 	 */
-	private static ArrayList<Integer> recuperarIndexesComecoEFim(File historicoEscolarDoc) throws IOException {
+	public ArrayList<Integer> recuperarIndexesComecoEFim(File historicoEscolarDoc) throws IOException {
 		ArrayList<Integer> indexesComecoEFimDasMaterias = new ArrayList<Integer>();
 		String historicoEscolarExtraido = extrairHistoricoEscolar(historicoEscolarDoc);
 		indexesComecoEFimDasMaterias = buscadoresDeIndex(historicoEscolarExtraido);
@@ -88,7 +66,7 @@ public class LeitorDeHistorico {
 	 * @return historicoEscolarExtraido
 	 * @throws IOException
 	 */
-	private static String extrairHistoricoEscolar(File historicoEscolarDoc) throws IOException {
+	public String extrairHistoricoEscolar(File historicoEscolarDoc) throws IOException {
 		String historicoEscolarExtraido;
 		historicoEscolarExtraido = extrairPDF(historicoEscolarDoc);
 		return historicoEscolarExtraido;
@@ -106,7 +84,7 @@ public class LeitorDeHistorico {
 	 * @return String com o histórico extraido
 	 * 
 	 */
-	public static String extrairPDF(File historicoEscolarCaminho) throws IOException {
+	public String extrairPDF(File historicoEscolarCaminho) throws IOException {
 		PDDocument historicoEscolar = PDDocument.load(historicoEscolarCaminho);
 		PDFTextStripper pdfStripper = new PDFTextStripper();
 		String historicoEscolarExtraido = pdfStripper.getText(historicoEscolar);
@@ -126,10 +104,10 @@ public class LeitorDeHistorico {
 	 *         inicial e final do bloco de aprovações
 	 * 
 	 */
-	public static ArrayList<Integer> buscadoresDeIndex(String historicoEscolarExtraido) throws IOException {
+	public ArrayList<Integer> buscadoresDeIndex(String historicoEscolarExtraido) throws IOException {
 		ArrayList<Integer> indexesComecoEFimDasMaterias = new ArrayList<Integer>();
-		int indexComeco = historicoEscolarExtraido.indexOf("Situação Local\r\n") + 16;
-		int indexFim = historicoEscolarExtraido.indexOf("Geral:") + 13;
+		int indexComeco = historicoEscolarExtraido.indexOf(MARCO_INDICE_INICIAL) + 16;
+		int indexFim = historicoEscolarExtraido.indexOf(MARCO_INDICE_FINAL) + 13;
 
 		indexesComecoEFimDasMaterias.add(indexComeco);
 		indexesComecoEFimDasMaterias.add(indexFim);
@@ -152,7 +130,7 @@ public class LeitorDeHistorico {
 	 * @return Substring com o bloco de matérias separado do restante
 	 * 
 	 */
-	public static String refinadorDeConteudoDoHistoricoEscolar(String historicoEscolarExtraido, int indexComeco,
+	public String refinadorDeConteudoDoHistoricoEscolar(String historicoEscolarExtraido, int indexComeco,
 			int indexFim) {
 		String historicoEscolarRefinado = historicoEscolarExtraido.substring(indexComeco, indexFim);
 		return historicoEscolarRefinado;

@@ -17,7 +17,6 @@ public class Disciplina {
 	private String codigo;
 	private String nome;
 	private String media;
-	private String frequencia;
 	private String situacao;
 	
 	public String getCodigo() {
@@ -50,14 +49,6 @@ public class Disciplina {
 
 	public void setMedia(String media) {
 		this.media = media;
-	}
-
-	public String getFrequencia() {
-		return frequencia;
-	}
-
-	public void setFrequencia(String frequencia) {
-		this.frequencia = frequencia;
 	}
 
 }

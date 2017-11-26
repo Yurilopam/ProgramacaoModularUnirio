@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import br.unirio.ccet.pm.controller.DisciplinaController;
-import br.unirio.ccet.pm.model.ManipuladorDeHistorico;
+import br.unirio.ccet.pm.util.ManipuladorDeHistorico;
 
 public class Gerenciador {
 
@@ -19,17 +19,20 @@ public class Gerenciador {
 	public static void main(String[] args) throws IOException {
 		final File historicoEscolarDocumento = new File(HISTORIO_ESCOLAR_PATH.toString());
 		DisciplinaController disciplinaController = new DisciplinaController();
-		ManipuladorDeHistorico PDF = new ManipuladorDeHistorico();
+		ManipuladorDeHistorico pdf = new ManipuladorDeHistorico();
 		
-		String historicoEscolarExtraido = PDF.extrairHistoricoEscolar(historicoEscolarDocumento);
-		String historicoEscolarRefinado = PDF.refinadorDeConteudoDoHistoricoEscolar(historicoEscolarExtraido,
-				PDF.recuperarIndexInicial(historicoEscolarDocumento), PDF.recuperarIndexFinal(historicoEscolarDocumento));
+		String historicoEscolarExtraido = pdf.extrairHistoricoEscolar(historicoEscolarDocumento);
+		String historicoEscolarRefinado = pdf.refinadorDeConteudoDoHistoricoEscolar(historicoEscolarExtraido,
+				pdf.recuperarIndexInicial(historicoEscolarDocumento), pdf.recuperarIndexFinal(historicoEscolarDocumento));
 		disciplinaController.importarListaDisciplinas(LISTA_DISCIPLINA_PATH.toString());
-		disciplinaController.encontrarNotaDisciplinas(historicoEscolarRefinado);
+		disciplinaController.encontrarNotaESituacaoDisciplinas(historicoEscolarRefinado);
+		
+		
 		for (String codigo : disciplinaController.getInformacaoesDeDisciplinas().keySet()) {
 			System.out.println(disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getCodigo() + " " + 
 					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getNome() + " " + 
-					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getMedia());
+					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getMedia() + " " + 
+					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getSituacao());
 		}
 	}
 }

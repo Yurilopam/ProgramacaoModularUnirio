@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.StringUtils;
+
 import br.unirio.ccet.pm.model.Disciplina;
 
 public class DisciplinaController {
+	
 	private HashMap<String, Disciplina> informacaoesDeDisciplinas = new HashMap<String, Disciplina>();
 	private Scanner leitor;
 	private Scanner leitorDeHistorico;
@@ -56,7 +59,7 @@ public class DisciplinaController {
 	 *            escolar
 	 * 
 	 */
-	public void encontrarNotaDisciplinas(String historicoRefinado) {
+	public void encontrarNotaESituacaoDisciplinas(String historicoRefinado) {
 
 		leitorDeHistorico = new Scanner(historicoRefinado);
 		String codigo;
@@ -64,69 +67,67 @@ public class DisciplinaController {
 
 		while (leitorDeHistorico.hasNextLine()) {
 			String linhaAtual = leitorDeHistorico.nextLine();
+			String notaDisciplina;
+			String situacaoDisciplina;
 			leitor = new Scanner(linhaAtual);
 			codigo = leitor.next();
 			for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
 				if (codigo.equals(codigoChave)) {
 					disciplina = informacaoesDeDisciplinas.get(codigo);
-					String[] separadorNomeDisciplina = disciplina.getNome().split(" ");
-					int tamanhoDoNomeDisciplina = separadorNomeDisciplina.length;
-					String[] separadorDeStatus = linhaAtual.split(" ");
-					String notaDisciplina = separadorDeStatus[tamanhoDoNomeDisciplina + 2];
-					if(!notaDisciplina.equals(" ")){
-						disciplina.setMedia(notaDisciplina);
+					if (codigo.equals("HTD0058")) {
+						String[] separadorNomeDisciplina = disciplina.getNome().split(" ");
+						int tamanhoDoNomeDisciplina = separadorNomeDisciplina.length;
+						String[] separadorDeStatus = linhaAtual.concat(leitorDeHistorico.nextLine()).concat(" ")
+															   .concat(leitorDeHistorico.nextLine()).split(" ");
+						notaDisciplina = recuperarNotaNoArray(tamanhoDoNomeDisciplina, separadorDeStatus);
+						situacaoDisciplina = separadorDeStatus[separadorDeStatus.length - 1];
+					} else {
+						String[] separadorNomeDisciplina = disciplina.getNome().split(" ");
+						int tamanhoDoNomeDisciplina = separadorNomeDisciplina.length;
+						String[] separadorDeStatus = linhaAtual.split(" ");
+						notaDisciplina = recuperarNotaNoArray(tamanhoDoNomeDisciplina, separadorDeStatus);
+						situacaoDisciplina = separadorDeStatus[separadorDeStatus.length - 1];
 					}
-					else {
-						disciplina.setMedia("nota vazia");
-					}
-				}
+					disciplina.setMedia(notaDisciplina);
+					disciplina.setSituacao(situacaoDisciplina);
+				} 
 			}
 		}
-
+		for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
+			disciplina = informacaoesDeDisciplinas.get(codigoChave);
+			if (StringUtils.isEmpty(disciplina.getMedia())) {
+				disciplina.setMedia("disciplina não cursada");
+			}
+			if (StringUtils.isEmpty(disciplina.getSituacao())){
+				disciplina.setSituacao(" ");
+			}
+		}
+		
 	}
 
 
-	/**
-	 * Este método procura encontrar o status de aprovação do aluno em uma
-	 * disciplina e armazená-lo no hashmap
-	 * 
-	 * @param historicoRefinado
-	 *            (String) : um bloco menor [apenas com as disciplinas] do historico
-	 *            escolar
-	 * 
-	 */
-	public void encontrarSituacaoDisciplinas(String historicoRefinado) {
-
-		leitorDeHistorico = new Scanner(historicoRefinado);
-		String codigo;
-		Disciplina disciplina;
-
-		while (leitorDeHistorico.hasNextLine()) {
-			String linhaAtual = leitorDeHistorico.nextLine();
-			leitor = new Scanner(linhaAtual);
-			codigo = leitor.next();
-			for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
-				if (codigo.equals(codigoChave)) {
-					disciplina = informacaoesDeDisciplinas.get(codigo);
-					String[] separadorDeStatus = linhaAtual.split("-");
-					if(codigo.equals("TIN0110")){
-						disciplina.setSituacao(separadorDeStatus[2]);
-					}
-					else if (codigo.equals("HTD0058")) {
-						String novaLinhaAtual = linhaAtual.concat(leitorDeHistorico.nextLine())
-								.concat(leitorDeHistorico.nextLine());
-						separadorDeStatus = novaLinhaAtual.split("-");
-						disciplina.setSituacao(separadorDeStatus[1]);
-					}
-					else {
-						disciplina.setSituacao(separadorDeStatus[1]);
-					}
-				}
-			}
+	private String recuperarNotaNoArray(int tamanhoDoNomeDisciplina, String[] separadorDeStatus) {
+		String notaDisciplina;
+		if (disciplinaSemNota(tamanhoDoNomeDisciplina, separadorDeStatus)) {
+			notaDisciplina = "sem nota";
+		} else {
+			notaDisciplina = separadorDeStatus[tamanhoDoNomeDisciplina + 3];
 		}
-
+		return notaDisciplina;
 	}
-	
+
+
+	private boolean disciplinaSemNota(int tamanhoDoNomeDisciplina, String[] separadorDeStatus) {
+		if (separadorDeStatus[tamanhoDoNomeDisciplina + 4].equals("ASC") || 
+				separadorDeStatus[tamanhoDoNomeDisciplina + 4].equals("APV") || 
+				separadorDeStatus[tamanhoDoNomeDisciplina + 4].equals("REF") || 
+				separadorDeStatus[tamanhoDoNomeDisciplina + 4].equals("DIS")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	
 	public HashMap<String, Disciplina> getInformacaoesDeDisciplinas() {
 		return informacaoesDeDisciplinas;

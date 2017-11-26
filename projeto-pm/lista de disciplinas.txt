@@ -1,9 +1,9 @@
-TIN0107:Técnicas de  Programação I
+TIN0107:Técnicas de Programação I
 TIN0106:Desenvolvimento de Páginas WEB
 TIN0112:Fundamentos de Sistemas de Informação
 TIN0108:Organização de Computadores
 TME0011:Matemática Básica
-HTD0058:Teorias e Práticas Discursivas
+HTD0058:Teorias e Práticas Discursivas na Esfera Academica
 TIN0011:Técnicas de Programação II
 TIN0013:Análise Empresarial e Administrativa
 TME0015:Álgebra Linear
@@ -28,14 +28,14 @@ TIN0126:Redes de Computadores 2
 TIN0171:Projeto e Construção de Sistemas
 TIN0054:Atividades Curriculares de Extensão 1
 TIN0117:Administração Financeira
-TIN0125:Projeto e Construção de Sistemas com SGBD
+TIN0125:Projeto e Construção de Sistemas comSGBD
 TIN0121:Programação Modular
 TIN0055:Atividades Curriculares de Extensão 2
 TIN0122:Processos de Software
 TIN0056:Atividades Curriculares de Extensão 3
 TIN0131:Projeto de Graduação I
 TIN0132:Gerência de Projetos em Informática
-TIN0057:Atividades Curriculares  de Extensão 4
+TIN0057:Atividades Curriculares de Extensão 4
 TIN0132:Projeto de Graduação II
 TIN0135:Administração de Banco de Dados
 TIN0144:Algoritmos para Problemas Combinatórios
