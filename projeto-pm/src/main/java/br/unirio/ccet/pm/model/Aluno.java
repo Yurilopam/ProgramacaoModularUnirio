@@ -27,7 +27,7 @@ public class Aluno {
 	private boolean foiJubilado;
 	
 	@Getter @Setter
-	private int CRA;
+	private String cra;
 	
 	@Getter @Setter
 	private boolean formarNoPrazo; //verificar se ele pode se formar no prazo ou não
