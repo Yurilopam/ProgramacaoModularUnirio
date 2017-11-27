@@ -6,27 +6,42 @@ import br.unirio.ccet.pm.model.Aluno;
 import br.unirio.ccet.pm.model.Disciplina;
 
 public class VerificadorDasRegras {
-
-	public String verificarRegraDeAlunoJubilado(HashMap<String, Disciplina> informacaoesDeDisciplinas, Aluno aluno) {
+	/**
+	 * Este método verifica se o aluno deve ser jubilado ou não
+	 * 
+	 * @param informacaoesDeDisciplinas
+	 *            (HashMap<String, Disciplina>) : informações completas de todas as disciplinas do curso
+	 * 
+	 * @param aluno
+	 *            (Aluno) : aluno que está sendo verificado
+	 * 
+	 */
+	public boolean verificarRegraDeAlunoJubilado(HashMap<String, Disciplina> informacaoesDeDisciplinas, Aluno aluno) {
 		
 		Disciplina disciplina;
-		String jubilado = "";
+		boolean jubilado=false;
 		String craAlunoFormatado = aluno.getCra().replace(",", ".");
 		
 		if (Double.valueOf(craAlunoFormatado) < 4) {
 			for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
 				disciplina = informacaoesDeDisciplinas.get(codigoChave);
 				if (disciplina.getTotalDeReprovacoes() >= 4) {
-					jubilado = "O aluno possui CRA menor que quatro e reprovou quatro ou mais vezes em uma disciplina.";
+					jubilado = true;
 					break;
 				}
 			} 
 		} else {
-			jubilado = "O aluno não tem que ser jubilado.";
+			jubilado = false;
 		}
 		return jubilado;
 	}
-
+	/**
+	 * Este método verifica se o aluno pode pedir integralização
+	 * 
+	 * @param aluno
+	 *            (Aluno) : aluno que está sendo verificado
+	 * 
+	 */
 	public String verificarRegrasDeIntegralizacao(Aluno aluno) {
 
 		String integralizacao = "";
@@ -47,11 +62,17 @@ public class VerificadorDasRegras {
 		}
 		return integralizacao;
 	}
-	
-	public String verificarRegrasDeNotas(HashMap<String, Disciplina> informacaoesDeDisciplinas) {
+	/**
+	 * Este método verifica se o aluno tem nota para fazer a integralização
+	 * 
+	 * @param informacaoesDeDisciplinas
+	 *            (HashMap<String, Disciplina>) : informações completas de todas as disciplinas do curso
+	 * 
+	 */
+	public boolean verificarRegrasDeNotas(HashMap<String, Disciplina> informacaoesDeDisciplinas) {
 		Disciplina disciplina;
 		int notasAbaixoDeCinco = 0;
-		String situacaoNota = "";
+		boolean situacaoNota = true;
 		
 		for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
 			disciplina = informacaoesDeDisciplinas.get(codigoChave);
@@ -65,23 +86,37 @@ public class VerificadorDasRegras {
 			}
 		}
 		if (notasAbaixoDeCinco > 0) {
-			situacaoNota = "O aluno ainda não pode integralizar pois possui notas abaixo de 5,0.";
+			situacaoNota = false;
 		} else {
-			situacaoNota = "O aluno está com todas as notas regulamentadas para integralizar.";
+			situacaoNota = true;
 		}
 		return situacaoNota;
 	}
-
-	public String verificarCrAluno(Aluno aluno) {
+	/**
+	 * Este método verifica se o aluno tem cr > 7
+	 * 
+	 * @param aluno
+	 *            (Aluno) : aluno que está sendo verificado
+	 * 
+	 */
+	public boolean verificarCRAAluno(Aluno aluno) {
 		String craAlunoFormatado = aluno.getCra().replace(",", ".");
 		if (Double.valueOf(craAlunoFormatado) > 7) {
-			return "O CR do aluno é maior que sete.";
+			return true;
 		} else {
-			return "O CR do aluno é menor que sete.";
+			return false;
 		}
 	}
-
-	public String verificarSeCursaAoMenosTresDisciplinas(HashMap<String, Disciplina> informacaoesDeDisciplinas) {
+	/**
+	 * Este método verifica se o aluno está cursando o mínimo de disciplinas no semestre
+	 * 
+	 * TODO: verificação de eletivas
+	 * 
+	 * @param informacaoesDeDisciplinas
+	 *            (HashMap<String, Disciplina>) : informações completas de todas as disciplinas do curso
+	 * 
+	 */
+	public boolean verificarSeCursaAoMenosTresDisciplinas(HashMap<String, Disciplina> informacaoesDeDisciplinas) {
 		Disciplina disciplina;
 		int contaDisciplinasMatriculadas = 0;
 		for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
@@ -91,12 +126,25 @@ public class VerificadorDasRegras {
 			}
 		}
 		if (contaDisciplinasMatriculadas >= 3) {
-			return "O aluno está cursando ao menos três disciplinas.";
+			return true;
 		}
-		return "O aluno não está cursando ao menos três disciplinas.";
+		return false;
 	}
-
-	public String verificarSeAlunoIntegralizaNormalmente(HashMap<String, Disciplina> informacaoesDeDisciplinas, Aluno aluno) {
+	
+	/**
+	 * Este método verifica se o aluno consegue se formar no tempo certo
+	 * 
+	 * TODO: verificar regra genericamente
+	 * 
+	 * @param informacaoesDeDisciplinas
+	 *            (HashMap<String, Disciplina>) : informações completas de todas as disciplinas do curso
+	 * 
+	 * @param aluno
+	 *            (Aluno) : aluno que está sendo verificado
+	 * 
+	 */
+	
+	public boolean verificarSeAlunoIntegralizaNormalmente(HashMap<String, Disciplina> informacaoesDeDisciplinas, Aluno aluno) {
 		Disciplina disciplina;
 		int contaDisciplinasAprovadas = 0;
 		for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
@@ -106,23 +154,22 @@ public class VerificadorDasRegras {
 			}
 		}
 		
-		String condicoesFormacao = "O aluno tem condições de se formar dentro do prazo regular.";
 		if (contaDisciplinasAprovadas >= 6 && Integer.valueOf(aluno.getPeriodoAtual()) < 3) {
-			return condicoesFormacao;
+			return true;
 		} else if (contaDisciplinasAprovadas >= 12 && Integer.valueOf(aluno.getPeriodoAtual()) < 4) {
-			return condicoesFormacao;
+			return true;
 		} else if (contaDisciplinasAprovadas >= 19 && Integer.valueOf(aluno.getPeriodoAtual()) < 5) {
-			return condicoesFormacao;
+			return true;
 		} else if (contaDisciplinasAprovadas >= 26 && Integer.valueOf(aluno.getPeriodoAtual()) < 6) {
-			return condicoesFormacao;
+			return true;
 		} else if (contaDisciplinasAprovadas >= 33 && Integer.valueOf(aluno.getPeriodoAtual()) < 7) {
-			return condicoesFormacao;
+			return true;
 		} else if (contaDisciplinasAprovadas >= 39 && Integer.valueOf(aluno.getPeriodoAtual()) < 8) {
-			return condicoesFormacao;
+			return true;
 		} else if (contaDisciplinasAprovadas >= 45 && Integer.valueOf(aluno.getPeriodoAtual()) < 9) {
-			return condicoesFormacao;
+			return true;
 		}
-		return "O aluno não tem condições de se formar dentro do prazo regular.";
+		return false;
 	}
 
 }

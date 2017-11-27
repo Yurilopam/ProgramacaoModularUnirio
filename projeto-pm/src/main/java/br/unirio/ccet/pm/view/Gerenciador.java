@@ -37,19 +37,19 @@ public class Gerenciador {
 		alunoController.encontrarCRAdoAluno(historicoEscolarRefinado);
 		alunoController.encontrarDadosDePeriodoDoAluno(historicoEscolarExtraido);
 		
-		String jubilarAluno = regras.verificarRegraDeAlunoJubilado(disciplinaController.getInformacaoesDeDisciplinas(),
+		boolean jubilarAluno = regras.verificarRegraDeAlunoJubilado(disciplinaController.getInformacaoesDeDisciplinas(),
 				alunoController.getAluno());
 		
 		String integralizarAluno = regras.verificarRegrasDeIntegralizacao(alunoController.getAluno());
 		
-		String situacaoNotas = regras.verificarRegrasDeNotas(disciplinaController.getInformacaoesDeDisciplinas());
+		boolean situacaoNotas = regras.verificarRegrasDeNotas(disciplinaController.getInformacaoesDeDisciplinas());
 		
-		String materiasPorPeriodo = regras.verificarSeCursaAoMenosTresDisciplinas(disciplinaController.getInformacaoesDeDisciplinas());
+		boolean materiasPorPeriodo = regras.verificarSeCursaAoMenosTresDisciplinas(disciplinaController.getInformacaoesDeDisciplinas());
 		
-		String condicoesDeSeFormar = regras.verificarSeAlunoIntegralizaNormalmente(disciplinaController.getInformacaoesDeDisciplinas(), 
+		boolean condicoesDeSeFormar = regras.verificarSeAlunoIntegralizaNormalmente(disciplinaController.getInformacaoesDeDisciplinas(), 
 				alunoController.getAluno());
 		
-		String crAluno = regras.verificarCrAluno(alunoController.getAluno());
+		boolean crAluno = regras.verificarCRAAluno(alunoController.getAluno());
 		
 		System.out.println(jubilarAluno);
 		System.out.println(integralizarAluno);

@@ -64,7 +64,124 @@ public class DisciplinaController {
 	 *            escolar
 	 * 
 	 */
-	public void encontrarAtributosDisciplinas(String historicoRefinado) {
+	
+	public void encontrarNotaDisciplinas(String historicoRefinado) {
+
+		leitorDeHistorico = new Scanner(historicoRefinado);
+		String codigo;
+		Disciplina disciplina;
+
+		while (leitorDeHistorico.hasNextLine()) {
+			String notaDisciplina;
+			String linhaAtual = leitorDeHistorico.nextLine();
+			leitor = new Scanner(linhaAtual);
+			codigo = leitor.next();
+			for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
+				disciplina = informacaoesDeDisciplinas.get(codigo);
+				if (codigo.equals(codigoChave)) {
+					if (codigo.equals("HTD0058")){
+					String[] separadorNomeDisciplina = disciplina.getNome().split(" ");
+					int tamanhoDoNomeDisciplina = separadorNomeDisciplina.length;
+					String[] separadorDeStatus = linhaAtual.concat(leitorDeHistorico.nextLine()).concat(" ")
+															   .concat(leitorDeHistorico.nextLine()).split(" ");
+					notaDisciplina = recuperarNotaNoArray(tamanhoDoNomeDisciplina, separadorDeStatus);									
+					}
+				else {
+					String[] separadorNomeDisciplina = disciplina.getNome().split(" ");
+					int tamanhoDoNomeDisciplina = separadorNomeDisciplina.length;
+					String[] separadorDeStatus = linhaAtual.split(" ");
+					notaDisciplina = recuperarNotaNoArray(tamanhoDoNomeDisciplina, separadorDeStatus);				
+						
+					}	
+					
+					disciplina.setMedia(notaDisciplina);
+				}
+			}
+		}
+		
+		for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
+			disciplina = informacaoesDeDisciplinas.get(codigoChave);
+			if (StringUtils.isEmpty(disciplina.getMedia())) {
+				disciplina.setMedia("disciplina não cursada");
+			}
+		}
+
+	}
+	
+	/**
+	 * Este método procura encontrar a situação em que o aluno está em uma
+	 * disciplina e armazená-lo no hashmap
+	 * 
+	 * @param historicoRefinado
+	 *            (String) : um bloco menor [apenas com as disciplinas] do historico
+	 *            escolar
+	 * 
+	 */
+	
+public void encontrarSituacaoDisciplinas(String historicoRefinado) {
+		leitorDeHistorico = new Scanner(historicoRefinado);
+		String codigo;
+		Disciplina disciplina;
+
+		while (leitorDeHistorico.hasNextLine()) {
+			String situacaoDisciplina;
+			String linhaAtual = leitorDeHistorico.nextLine();
+			leitor = new Scanner(linhaAtual);
+			codigo = leitor.next();
+			for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
+				if (codigo.equals(codigoChave)) {
+					disciplina = informacaoesDeDisciplinas.get(codigo);
+					if (codigo.equals("HTD0058")) {
+						String novaLinhaAtual = linhaAtual.concat(leitorDeHistorico.nextLine())
+								.concat(leitorDeHistorico.nextLine());
+						String[] separadorDeStatus = linhaAtual.concat(leitorDeHistorico.nextLine()).concat(" ")
+															   .concat(leitorDeHistorico.nextLine()).split(" ");
+						situacaoDisciplina = separadorDeStatus[separadorDeStatus.length - 1];
+					}
+					else {
+						String[] separadorDeStatus = linhaAtual.split(" ");
+						situacaoDisciplina = separadorDeStatus[separadorDeStatus.length - 1];
+
+					}
+				disciplina.setSituacao(situacaoDisciplina);
+				}
+			}
+		}
+		for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
+			disciplina = informacaoesDeDisciplinas.get(codigoChave);
+			if (StringUtils.isEmpty(disciplina.getSituacao())){
+				disciplina.setSituacao(" ");
+			}
+		}
+		
+
+	}
+/**
+ * Este método dá um set em todos os atributos essenciais da disciplina
+ * 
+ * @param historicoRefinado
+ *            (String) : um bloco menor [apenas com as disciplinas] do historico
+ *            escolar
+ * 
+ */
+	
+public void encontrarAtributosDisciplinas(String historicoRefinado) {
+		encontrarReprovacoesDisciplinas(historicoRefinado);
+		encontrarSituacaoDisciplinas(historicoRefinado);	
+		encontrarNotaDisciplinas(historicoRefinado);
+}
+	
+/**
+ * Este método procura encontrar de reprovações que um aluno tem em uma
+ * disciplina e armazená-lo no hashmap
+ * 
+ * @param historicoRefinado
+ *            (String) : um bloco menor [apenas com as disciplinas] do historico
+ *            escolar
+ * 
+ */
+	
+public void encontrarReprovacoesDisciplinas(String historicoRefinado) {
 
 		leitorDeHistorico = new Scanner(historicoRefinado);
 		String codigo;
@@ -87,34 +204,35 @@ public class DisciplinaController {
 						String[] separadorDeStatus = linhaAtual.concat(leitorDeHistorico.nextLine()).concat(" ")
 															   .concat(leitorDeHistorico.nextLine()).split(" ");
 						notaDisciplina = recuperarNotaNoArray(tamanhoDoNomeDisciplina, separadorDeStatus);
-						situacaoDisciplina = separadorDeStatus[separadorDeStatus.length - 1];
 						totalDeReprovacoes = reprovacoes + recuperarTotalDeReprovacoes(tamanhoDoNomeDisciplina, separadorDeStatus) + disciplina.getTotalDeReprovacoes();
 					} else {
 						String[] separadorNomeDisciplina = disciplina.getNome().split(" ");
 						int tamanhoDoNomeDisciplina = separadorNomeDisciplina.length;
 						String[] separadorDeStatus = linhaAtual.split(" ");
-						notaDisciplina = recuperarNotaNoArray(tamanhoDoNomeDisciplina, separadorDeStatus);
-						situacaoDisciplina = separadorDeStatus[separadorDeStatus.length - 1];
 						totalDeReprovacoes = reprovacoes + recuperarTotalDeReprovacoes(tamanhoDoNomeDisciplina, separadorDeStatus) + disciplina.getTotalDeReprovacoes();
 					}
-					disciplina.setMedia(notaDisciplina);
-					disciplina.setSituacao(situacaoDisciplina);
 					disciplina.setTotalDeReprovacoes(totalDeReprovacoes);
 				} 
 			}
 		}
-		for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
-			disciplina = informacaoesDeDisciplinas.get(codigoChave);
-			if (StringUtils.isEmpty(disciplina.getMedia())) {
-				disciplina.setMedia("disciplina não cursada");
-			}
-			if (StringUtils.isEmpty(disciplina.getSituacao())){
-				disciplina.setSituacao(" ");
-			}
-		}
+		
 		
 	}
-
+	
+	
+/**
+ * Este método traz o posicionamento da nota dentro da linha do histórico
+ * em forma de array
+ * 
+ * @param tamanhoDoNomeDisciplina
+ *            (int) : quantidade de palavras que contém o nome de uma disciplina
+ * 
+ * @param separadorDeStatus
+ *            (String[]) : array com a linha do histórico na qual se encontra uma disciplina
+ *            separado por " ".
+ * 
+ */
+	
 
 	private String recuperarNotaNoArray(int tamanhoDoNomeDisciplina, String[] separadorDeStatus) {
 		String notaDisciplina;
@@ -126,7 +244,18 @@ public class DisciplinaController {
 		return notaDisciplina;
 	}
 
-
+	/**
+	 * Este método trata as disciplinas que não possuem nota no histórico, sejam elas por estarem
+	 * sendo cursadas ou por terem status de aprovação diferenciado
+	 * 
+	 * @param tamanhoDoNomeDisciplina
+	 *            (int) : quantidade de palavras que contém o nome de uma disciplina
+	 * 
+	 * @param separadorDeStatus
+	 *            (String[]) : array com a linha do histórico na qual se encontra uma disciplina
+	 *            separado por " ".
+	 * 
+	 */
 	private boolean disciplinaSemNota(int tamanhoDoNomeDisciplina, String[] separadorDeStatus) {
 		if (separadorDeStatus[tamanhoDoNomeDisciplina + 4].equals("ASC") || 
 				separadorDeStatus[tamanhoDoNomeDisciplina + 4].equals("APV") || 
@@ -138,7 +267,17 @@ public class DisciplinaController {
 		}
 	}
 	
-	
+	/**
+	 * Este método conta o número de reprovações que aquela disciplina teve no histórico
+	 * 
+	 * @param tamanhoDoNomeDisciplina
+	 *            (int) : quantidade de palavras que contém o nome de uma disciplina
+	 * 
+	 * @param separadorDeStatus
+	 *            (String[]) : array com a linha do histórico na qual se encontra uma disciplina
+	 *            separado por " ".
+	 * 
+	 */
 	private int recuperarTotalDeReprovacoes(int tamanhoDoNomeDisciplina, String[] separadorDeStatus) {
 		if (disciplinaSemNota(tamanhoDoNomeDisciplina, separadorDeStatus)) {
 			if (separadorDeStatus[tamanhoDoNomeDisciplina + 4].equals("REP") || 
@@ -157,7 +296,11 @@ public class DisciplinaController {
 		}
 	}
 	
-	
+	/**
+	 * Este método retorna o HashMap de informações de disciplina
+	 
+	 * 
+	 */
 	public HashMap<String, Disciplina> getInformacaoesDeDisciplinas() {
 		return informacaoesDeDisciplinas;
 	}

@@ -36,7 +36,7 @@ TIN0056:Atividades Curriculares de Extensão 3
 TIN0131:Projeto de Graduação I
 TIN0132:Gerência de Projetos em Informática
 TIN0057:Atividades Curriculares de Extensão 4
-TIN0132:Projeto de Graduação II
+TIN0133:Projeto de Graduação II
 TIN0135:Administração de Banco de Dados
 TIN0144:Algoritmos para Problemas Combinatórios
 TIN0150:Ambiente Operacional Unix
