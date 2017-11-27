@@ -82,12 +82,47 @@ public class VerificadorDasRegras {
 	}
 
 	public String verificarSeCursaAoMenosTresDisciplinas(HashMap<String, Disciplina> informacaoesDeDisciplinas) {
-		
-		return "";
+		Disciplina disciplina;
+		int contaDisciplinasMatriculadas = 0;
+		for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
+			disciplina = informacaoesDeDisciplinas.get(codigoChave);
+			if (disciplina.getSituacao().equals("Matrícula")) {
+				contaDisciplinasMatriculadas++;
+			}
+		}
+		if (contaDisciplinasMatriculadas >= 3) {
+			return "O aluno está cursando ao menos três disciplinas.";
+		}
+		return "O aluno não está cursando ao menos três disciplinas.";
 	}
 
-	public String verificarSeAlunoIntegralizaNormalmente() {
-		return "";
+	public String verificarSeAlunoIntegralizaNormalmente(HashMap<String, Disciplina> informacaoesDeDisciplinas, Aluno aluno) {
+		Disciplina disciplina;
+		int contaDisciplinasAprovadas = 0;
+		for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
+			disciplina = informacaoesDeDisciplinas.get(codigoChave);
+			if (disciplina.getSituacao().equals("Aprovado")) {
+				contaDisciplinasAprovadas++;
+			}
+		}
+		
+		String condicoesFormacao = "O aluno tem condições de se formar dentro do prazo regular.";
+		if (contaDisciplinasAprovadas >= 6 && Integer.valueOf(aluno.getPeriodoAtual()) < 3) {
+			return condicoesFormacao;
+		} else if (contaDisciplinasAprovadas >= 12 && Integer.valueOf(aluno.getPeriodoAtual()) < 4) {
+			return condicoesFormacao;
+		} else if (contaDisciplinasAprovadas >= 19 && Integer.valueOf(aluno.getPeriodoAtual()) < 5) {
+			return condicoesFormacao;
+		} else if (contaDisciplinasAprovadas >= 26 && Integer.valueOf(aluno.getPeriodoAtual()) < 6) {
+			return condicoesFormacao;
+		} else if (contaDisciplinasAprovadas >= 33 && Integer.valueOf(aluno.getPeriodoAtual()) < 7) {
+			return condicoesFormacao;
+		} else if (contaDisciplinasAprovadas >= 39 && Integer.valueOf(aluno.getPeriodoAtual()) < 8) {
+			return condicoesFormacao;
+		} else if (contaDisciplinasAprovadas >= 45 && Integer.valueOf(aluno.getPeriodoAtual()) < 9) {
+			return condicoesFormacao;
+		}
+		return "O aluno não tem condições de se formar dentro do prazo regular.";
 	}
 
 }
