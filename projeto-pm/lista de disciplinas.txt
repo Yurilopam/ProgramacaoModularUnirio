@@ -2,7 +2,7 @@ TIN0107:Técnicas de Programação I
 TIN0106:Desenvolvimento de Páginas WEB
 TIN0112:Fundamentos de Sistemas de Informação
 TIN0108:Organização de Computadores
-TME0011:Matemática Básica
+TME0101:Matemática Básica
 HTD0058:Teorias e Práticas Discursivas na Esfera Academica
 TIN0011:Técnicas de Programação II
 TIN0013:Análise Empresarial e Administrativa
@@ -62,4 +62,3 @@ TIN0166:Tópicos Avançados em Engenharia de Software II
 TIN0141:Tópicos Avançados em Redes de Computadores I
 TIN0164:Tópicos Avançados em Redes de Computadores II
 TIN0165:Tópicos Avançados em Redes de Computadores III
-TIN0174:Jogos Eletrônicos

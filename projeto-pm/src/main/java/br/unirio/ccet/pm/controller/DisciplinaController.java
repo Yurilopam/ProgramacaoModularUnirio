@@ -8,6 +8,7 @@ import java.util.Scanner;
 import org.apache.commons.lang3.StringUtils;
 
 import br.unirio.ccet.pm.model.Disciplina;
+import lombok.Getter;
 
 /**
  * 
@@ -16,7 +17,10 @@ import br.unirio.ccet.pm.model.Disciplina;
  */
 public class DisciplinaController {
 	
-	private HashMap<String, Disciplina> informacaoesDeDisciplinas = new HashMap<String, Disciplina>();
+	private HashMap<String, Disciplina> informacaoesDeDisciplinasObrigatoriasOptativas = new HashMap<String, Disciplina>();
+	private HashMap<String, Disciplina> informacaoesDeDisciplinasEletivas = new HashMap<String, Disciplina>();
+	@Getter
+	private HashMap<String, Disciplina> informacaoesDeTodasDisciplinas = new HashMap<String, Disciplina>();
 	private Scanner leitor;
 	private Scanner leitorDeHistorico;
 	
@@ -29,7 +33,7 @@ public class DisciplinaController {
 	 *            : endereço da lista na máquina
 	 * 
 	 */
-	public void importarListaDisciplinas(String caminhoLista) throws IOException {
+	private void importarListaDisciplinasObrigatoriasOptativas(String caminhoLista) throws IOException {
 		String codigoDisciplina;
 		String disciplinaRetiradaDaLista;
 		Disciplina disciplina;
@@ -37,21 +41,104 @@ public class DisciplinaController {
 		File listaDisciplina = new File(caminhoLista);
 		String[] arrayDeCodigoENome;
 
-		try {
-			Scanner leitorDisciplinas = new Scanner(listaDisciplina);
-			while (leitorDisciplinas.hasNextLine()) {
-				disciplinaRetiradaDaLista = leitorDisciplinas.nextLine();
-				arrayDeCodigoENome = disciplinaRetiradaDaLista.split(":");
-				disciplina = new Disciplina();
-				disciplina.setCodigo(arrayDeCodigoENome[0].trim());
-				disciplina.setNome(arrayDeCodigoENome[1].toLowerCase().trim());
-				codigoDisciplina = arrayDeCodigoENome[0].trim();
-				informacaoesDeDisciplinas.put(codigoDisciplina, disciplina);
-			}
-			leitorDisciplinas.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		Scanner leitorDisciplinas = new Scanner(listaDisciplina);
+		while (leitorDisciplinas.hasNextLine()) {
+			disciplinaRetiradaDaLista = leitorDisciplinas.nextLine();
+			arrayDeCodigoENome = disciplinaRetiradaDaLista.split(":");
+			disciplina = new Disciplina();
+			disciplina.setCodigo(arrayDeCodigoENome[0].trim());
+			disciplina.setNome(arrayDeCodigoENome[1].toLowerCase().trim());
+			codigoDisciplina = arrayDeCodigoENome[0].trim();
+			informacaoesDeDisciplinasObrigatoriasOptativas.put(codigoDisciplina, disciplina);
 		}
+		leitorDisciplinas.close();
+	}
+	
+	private void importarListaDisciplinasEletivas(String historicoEscolarRefinado) {
+		
+		leitorDeHistorico = new Scanner(historicoEscolarRefinado);
+		leitorDeHistorico.nextLine();
+		leitorDeHistorico.nextLine();
+		leitorDeHistorico.nextLine();
+		
+		String codigo;
+		
+		while (leitorDeHistorico.hasNextLine()) {
+			String linhaAtual = leitorDeHistorico.nextLine();
+			leitor = new Scanner(linhaAtual);
+			codigo = leitor.next();
+			
+			String[] separadorLinhaAtual = linhaAtual.split(" ");
+			if (!informacaoesDeDisciplinasObrigatoriasOptativas.keySet().contains(codigo) && 
+					verificarSeLinhaEhDeDisciplina(separadorLinhaAtual)) {
+				String abreviacaoDisciplina = verificarAbreviaturaDisciplina(separadorLinhaAtual);
+				String[] separadorPorAbreviacaoLinhaAtual = linhaAtual.split(abreviacaoDisciplina);
+				if (abreviacaoDisciplina.equals("ASC") || abreviacaoDisciplina.equals("DIS")) {
+					int redutorTamanhoArray = 3;
+					adicionarDisciplinaEletivaNoHashMap(codigo, separadorPorAbreviacaoLinhaAtual, redutorTamanhoArray);
+				} else {
+					int redutorTamanhoArray = 4;
+					adicionarDisciplinaEletivaNoHashMap(codigo, separadorPorAbreviacaoLinhaAtual, redutorTamanhoArray);
+				}
+			}
+		}
+	}
+
+	private void adicionarDisciplinaEletivaNoHashMap(String codigo, String[] separadorPorAbreviacaoLinhaAtual, int redutorTamanhoArray) {
+		String nomeDisciplina = "";
+		Disciplina disciplina;
+		String[] arrayCodigoNomeDisciplina = separadorPorAbreviacaoLinhaAtual[0].split(" ");
+		for (int i = 1; i < arrayCodigoNomeDisciplina.length - redutorTamanhoArray; i++) {
+			nomeDisciplina = nomeDisciplina.concat(arrayCodigoNomeDisciplina[i]).concat(" ");
+		}
+		disciplina = new Disciplina();
+		disciplina.setCodigo(codigo.trim());
+		disciplina.setNome(nomeDisciplina.toLowerCase().trim());
+		String codigoDisciplina = codigo.trim();
+		informacaoesDeDisciplinasEletivas.put(codigoDisciplina, disciplina);
+	}
+	
+	private String verificarAbreviaturaDisciplina(String[] separadorLinhaAtual) {
+		for (int i = 0; i < separadorLinhaAtual.length; i++) {
+			switch (separadorLinhaAtual[i]) {
+			case "ASC":
+				return "ASC";
+			case "APV-":
+				return "APV-";
+			case "REF":
+				return "REF";
+			case "APV":
+				return "APV";
+			case "REP":
+				return "REP";
+			case "DIS":
+				return "DIS";
+			}
+		}
+		return "";
+	}
+
+	private boolean verificarSeLinhaEhDeDisciplina(String[] separadorLinhaAtual) {
+		
+		if (separadorLinhaAtual[separadorLinhaAtual.length - 1].equals("Aprovado") || 
+				separadorLinhaAtual[separadorLinhaAtual.length - 1].equals("falta") || 
+				separadorLinhaAtual[separadorLinhaAtual.length - 1].equals("por") || 
+				separadorLinhaAtual[separadorLinhaAtual.length - 1].equals("de") || 
+				separadorLinhaAtual[separadorLinhaAtual.length - 1].equals("nota") || 
+				separadorLinhaAtual[separadorLinhaAtual.length - 1].equals("Matrícula"))
+			return true;
+		return false;
+	}
+
+	
+	public void importarListaTodasDisciplinas(String caminhoLista, String historicoEscolarRefinado) throws IOException {
+		
+		importarListaDisciplinasObrigatoriasOptativas(caminhoLista);
+		importarListaDisciplinasEletivas(historicoEscolarRefinado);
+		
+		informacaoesDeTodasDisciplinas.putAll(informacaoesDeDisciplinasObrigatoriasOptativas);
+		informacaoesDeTodasDisciplinas.putAll(informacaoesDeDisciplinasEletivas);
+		
 	}
 	
 
@@ -76,8 +163,8 @@ public class DisciplinaController {
 			String linhaAtual = leitorDeHistorico.nextLine();
 			leitor = new Scanner(linhaAtual);
 			codigo = leitor.next();
-			for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
-				disciplina = informacaoesDeDisciplinas.get(codigo);
+			for (String codigoChave : informacaoesDeTodasDisciplinas.keySet()) {
+				disciplina = informacaoesDeTodasDisciplinas.get(codigo);
 				if (codigo.equals(codigoChave)) {
 					if (codigo.equals("HTD0058")){
 					String[] separadorNomeDisciplina = disciplina.getNome().split(" ");
@@ -99,8 +186,8 @@ public class DisciplinaController {
 			}
 		}
 		
-		for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
-			disciplina = informacaoesDeDisciplinas.get(codigoChave);
+		for (String codigoChave : informacaoesDeTodasDisciplinas.keySet()) {
+			disciplina = informacaoesDeTodasDisciplinas.get(codigoChave);
 			if (StringUtils.isEmpty(disciplina.getMedia())) {
 				disciplina.setMedia("disciplina não cursada");
 			}
@@ -118,7 +205,7 @@ public class DisciplinaController {
 	 * 
 	 */
 	
-public void encontrarSituacaoDisciplinas(String historicoRefinado) {
+	public void encontrarSituacaoDisciplinas(String historicoRefinado) {
 		leitorDeHistorico = new Scanner(historicoRefinado);
 		String codigo;
 		Disciplina disciplina;
@@ -128,12 +215,10 @@ public void encontrarSituacaoDisciplinas(String historicoRefinado) {
 			String linhaAtual = leitorDeHistorico.nextLine();
 			leitor = new Scanner(linhaAtual);
 			codigo = leitor.next();
-			for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
+			for (String codigoChave : informacaoesDeTodasDisciplinas.keySet()) {
 				if (codigo.equals(codigoChave)) {
-					disciplina = informacaoesDeDisciplinas.get(codigo);
+					disciplina = informacaoesDeTodasDisciplinas.get(codigo);
 					if (codigo.equals("HTD0058")) {
-						String novaLinhaAtual = linhaAtual.concat(leitorDeHistorico.nextLine())
-								.concat(leitorDeHistorico.nextLine());
 						String[] separadorDeStatus = linhaAtual.concat(leitorDeHistorico.nextLine()).concat(" ")
 															   .concat(leitorDeHistorico.nextLine()).split(" ");
 						situacaoDisciplina = separadorDeStatus[separadorDeStatus.length - 1];
@@ -147,8 +232,8 @@ public void encontrarSituacaoDisciplinas(String historicoRefinado) {
 				}
 			}
 		}
-		for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
-			disciplina = informacaoesDeDisciplinas.get(codigoChave);
+		for (String codigoChave : informacaoesDeTodasDisciplinas.keySet()) {
+			disciplina = informacaoesDeTodasDisciplinas.get(codigoChave);
 			if (StringUtils.isEmpty(disciplina.getSituacao())){
 				disciplina.setSituacao(" ");
 			}
@@ -156,33 +241,33 @@ public void encontrarSituacaoDisciplinas(String historicoRefinado) {
 		
 
 	}
-/**
- * Este método dá um set em todos os atributos essenciais da disciplina
- * 
- * @param historicoRefinado
- *            (String) : um bloco menor [apenas com as disciplinas] do historico
- *            escolar
- * 
- */
 	
-public void encontrarAtributosDisciplinas(String historicoRefinado) {
-		encontrarReprovacoesDisciplinas(historicoRefinado);
-		encontrarSituacaoDisciplinas(historicoRefinado);	
-		encontrarNotaDisciplinas(historicoRefinado);
-}
+	/**
+	 * Este método dá um set em todos os atributos essenciais da disciplina
+	 * 
+	 * @param historicoRefinado
+	 *            (String) : um bloco menor [apenas com as disciplinas] do historico
+	 *            escolar
+	 * 
+	 */
+	public void encontrarAtributosDisciplinas(String historicoRefinado) {
+			encontrarReprovacoesDisciplinas(historicoRefinado);
+			encontrarSituacaoDisciplinas(historicoRefinado);	
+			encontrarNotaDisciplinas(historicoRefinado);
+	}
 	
-/**
- * Este método procura encontrar de reprovações que um aluno tem em uma
- * disciplina e armazená-lo no hashmap
- * 
- * @param historicoRefinado
- *            (String) : um bloco menor [apenas com as disciplinas] do historico
- *            escolar
- * 
- */
+	/**
+	 * Este método procura encontrar de reprovações que um aluno tem em uma
+	 * disciplina e armazená-lo no hashmap
+	 * 
+	 * @param historicoRefinado
+	 *            (String) : um bloco menor [apenas com as disciplinas] do historico
+	 *            escolar
+	 * 
+	 */
+		
+	public void encontrarReprovacoesDisciplinas(String historicoRefinado) {
 	
-public void encontrarReprovacoesDisciplinas(String historicoRefinado) {
-
 		leitorDeHistorico = new Scanner(historicoRefinado);
 		String codigo;
 		Disciplina disciplina;
@@ -190,20 +275,17 @@ public void encontrarReprovacoesDisciplinas(String historicoRefinado) {
 		
 		while (leitorDeHistorico.hasNextLine()) {
 			String linhaAtual = leitorDeHistorico.nextLine();
-			String notaDisciplina;
-			String situacaoDisciplina;
 			leitor = new Scanner(linhaAtual);
 			codigo = leitor.next();
 			int totalDeReprovacoes = 0;
-			for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
+			for (String codigoChave : informacaoesDeTodasDisciplinas.keySet()) {
 				if (codigo.equals(codigoChave)) {
-					disciplina = informacaoesDeDisciplinas.get(codigo);
+					disciplina = informacaoesDeTodasDisciplinas.get(codigo);
 					if (codigo.equals("HTD0058")) {
 						String[] separadorNomeDisciplina = disciplina.getNome().split(" ");
 						int tamanhoDoNomeDisciplina = separadorNomeDisciplina.length;
 						String[] separadorDeStatus = linhaAtual.concat(leitorDeHistorico.nextLine()).concat(" ")
 															   .concat(leitorDeHistorico.nextLine()).split(" ");
-						notaDisciplina = recuperarNotaNoArray(tamanhoDoNomeDisciplina, separadorDeStatus);
 						totalDeReprovacoes = reprovacoes + recuperarTotalDeReprovacoes(tamanhoDoNomeDisciplina, separadorDeStatus) + disciplina.getTotalDeReprovacoes();
 					} else {
 						String[] separadorNomeDisciplina = disciplina.getNome().split(" ");
@@ -216,7 +298,7 @@ public void encontrarReprovacoesDisciplinas(String historicoRefinado) {
 			}
 		}
 		
-		
+			
 	}
 	
 	
@@ -294,15 +376,6 @@ public void encontrarReprovacoesDisciplinas(String historicoRefinado) {
 				return 0;
 			}
 		}
-	}
-	
-	/**
-	 * Este método retorna o HashMap de informações de disciplina
-	 
-	 * 
-	 */
-	public HashMap<String, Disciplina> getInformacaoesDeDisciplinas() {
-		return informacaoesDeDisciplinas;
 	}
 	
 }

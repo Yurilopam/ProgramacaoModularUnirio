@@ -19,7 +19,7 @@ public class VerificadorDasRegras {
 	public boolean verificarRegraDeAlunoJubilado(HashMap<String, Disciplina> informacaoesDeDisciplinas, Aluno aluno) {
 		
 		Disciplina disciplina;
-		boolean jubilado=false;
+		boolean jubilado = false;
 		String craAlunoFormatado = aluno.getCra().replace(",", ".");
 		
 		if (Double.valueOf(craAlunoFormatado) < 4) {

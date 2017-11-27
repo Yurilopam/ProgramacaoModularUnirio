@@ -32,21 +32,23 @@ public class Gerenciador {
 		String historicoEscolarExtraido = pdf.extrairHistoricoEscolar(historicoEscolarDocumento);
 		String historicoEscolarRefinado = pdf.refinadorDeConteudoDoHistoricoEscolar(historicoEscolarExtraido,
 				pdf.recuperarIndexInicial(historicoEscolarDocumento), pdf.recuperarIndexFinal(historicoEscolarDocumento));
-		disciplinaController.importarListaDisciplinas(LISTA_DISCIPLINA_PATH.toString());
+		
+		disciplinaController.importarListaTodasDisciplinas(LISTA_DISCIPLINA_PATH.toString(), historicoEscolarRefinado);
 		disciplinaController.encontrarAtributosDisciplinas(historicoEscolarRefinado);
+		
 		alunoController.encontrarCRAdoAluno(historicoEscolarRefinado);
 		alunoController.encontrarDadosDePeriodoDoAluno(historicoEscolarExtraido);
 		
-		boolean jubilarAluno = regras.verificarRegraDeAlunoJubilado(disciplinaController.getInformacaoesDeDisciplinas(),
+		boolean jubilarAluno = regras.verificarRegraDeAlunoJubilado(disciplinaController.getInformacaoesDeTodasDisciplinas(),
 				alunoController.getAluno());
 		
 		String integralizarAluno = regras.verificarRegrasDeIntegralizacao(alunoController.getAluno());
 		
-		boolean situacaoNotas = regras.verificarRegrasDeNotas(disciplinaController.getInformacaoesDeDisciplinas());
+		boolean situacaoNotas = regras.verificarRegrasDeNotas(disciplinaController.getInformacaoesDeTodasDisciplinas());
 		
-		boolean materiasPorPeriodo = regras.verificarSeCursaAoMenosTresDisciplinas(disciplinaController.getInformacaoesDeDisciplinas());
+		boolean materiasPorPeriodo = regras.verificarSeCursaAoMenosTresDisciplinas(disciplinaController.getInformacaoesDeTodasDisciplinas());
 		
-		boolean condicoesDeSeFormar = regras.verificarSeAlunoIntegralizaNormalmente(disciplinaController.getInformacaoesDeDisciplinas(), 
+		boolean condicoesDeSeFormar = regras.verificarSeAlunoIntegralizaNormalmente(disciplinaController.getInformacaoesDeTodasDisciplinas(), 
 				alunoController.getAluno());
 		
 		boolean crAluno = regras.verificarCRAAluno(alunoController.getAluno());
@@ -60,12 +62,12 @@ public class Gerenciador {
 		
 		System.out.println("");
 		
-		for (String codigo : disciplinaController.getInformacaoesDeDisciplinas().keySet()) {
-			System.out.println(disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getCodigo() + " " + 
-					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getNome() + " " + 
-					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getMedia() + " " + 
-					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getSituacao() + " " + 
-					disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getTotalDeReprovacoes());
+		for (String codigo : disciplinaController.getInformacaoesDeTodasDisciplinas().keySet()) {
+			System.out.println(disciplinaController.getInformacaoesDeTodasDisciplinas().get(codigo).getCodigo() + " " + 
+					disciplinaController.getInformacaoesDeTodasDisciplinas().get(codigo).getNome() + " " + 
+					disciplinaController.getInformacaoesDeTodasDisciplinas().get(codigo).getMedia() + " " + 
+					disciplinaController.getInformacaoesDeTodasDisciplinas().get(codigo).getSituacao() + " " + 
+					disciplinaController.getInformacaoesDeTodasDisciplinas().get(codigo).getTotalDeReprovacoes());
 		}
 	}
 }
