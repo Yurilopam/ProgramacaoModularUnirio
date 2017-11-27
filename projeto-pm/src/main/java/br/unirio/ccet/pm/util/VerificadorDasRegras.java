@@ -47,7 +47,47 @@ public class VerificadorDasRegras {
 		}
 		return integralizacao;
 	}
+	
+	public String verificarRegrasDeNotas(HashMap<String, Disciplina> informacaoesDeDisciplinas) {
+		Disciplina disciplina;
+		int notasAbaixoDeCinco = 0;
+		String situacaoNota = "";
+		
+		for (String codigoChave : informacaoesDeDisciplinas.keySet()) {
+			disciplina = informacaoesDeDisciplinas.get(codigoChave);
+			if (!disciplina.getMedia().equals("sem nota") 
+					&& !disciplina.getMedia().equals("disciplina não cursada")
+					&& !disciplina.getMedia().equals("S")) {
+				String notaDisciplinaFormatada = disciplina.getMedia().replace(",", ".");
+				if (Double.valueOf(notaDisciplinaFormatada) < 5.0) {
+					notasAbaixoDeCinco++;
+				}
+			}
+		}
+		if (notasAbaixoDeCinco > 0) {
+			situacaoNota = "O aluno ainda não pode integralizar pois possui notas abaixo de 5,0.";
+		} else {
+			situacaoNota = "O aluno está com todas as notas regulamentadas para integralizar.";
+		}
+		return situacaoNota;
+	}
 
-	
-	
+	public String verificarCrAluno(Aluno aluno) {
+		String craAlunoFormatado = aluno.getCra().replace(",", ".");
+		if (Double.valueOf(craAlunoFormatado) > 7) {
+			return "O CR do aluno é maior que sete.";
+		} else {
+			return "O CR do aluno é menor que sete.";
+		}
+	}
+
+	public String verificarSeCursaAoMenosTresDisciplinas(HashMap<String, Disciplina> informacaoesDeDisciplinas) {
+		
+		return "";
+	}
+
+	public String verificarSeAlunoIntegralizaNormalmente() {
+		return "";
+	}
+
 }

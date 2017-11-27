@@ -42,8 +42,20 @@ public class Gerenciador {
 		
 		String integralizarAluno = regras.verificarRegrasDeIntegralizacao(alunoController.getAluno());
 		
+		String situacaoNotas = regras.verificarRegrasDeNotas(disciplinaController.getInformacaoesDeDisciplinas());
+		
+		String materiasPorPeriodo = regras.verificarSeCursaAoMenosTresDisciplinas(disciplinaController.getInformacaoesDeDisciplinas());
+		
+		String condicoesDeSeFormar = regras.verificarSeAlunoIntegralizaNormalmente();
+		
+		String crAluno = regras.verificarCrAluno(alunoController.getAluno());
+		
 		System.out.println(jubilarAluno);
 		System.out.println(integralizarAluno);
+		System.out.println(situacaoNotas);
+		System.out.println(materiasPorPeriodo);
+		System.out.println(condicoesDeSeFormar);
+		System.out.println(crAluno);
 		
 		for (String codigo : disciplinaController.getInformacaoesDeDisciplinas().keySet()) {
 			System.out.println(disciplinaController.getInformacaoesDeDisciplinas().get(codigo).getCodigo() + " " + 
