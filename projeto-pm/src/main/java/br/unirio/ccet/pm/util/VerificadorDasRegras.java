@@ -45,26 +45,20 @@ public class VerificadorDasRegras {
 	 */
 	public int verificarRegrasDeIntegralizacao(Aluno aluno) {
 
-		String integralizacao = "";
-                int codigoRetornoIntegralizacao=10;
-		
-		if (Integer.valueOf(aluno.getAnoEntrada()) <= 20132 && 
-				Integer.valueOf(aluno.getPeriodoAtual()) > 12) {
-			integralizacao = "O aluno deve pedir prorrogação de integralização para o próximo período.";
-                        codigoRetornoIntegralizacao= 0;
+		int codigoRetornoIntegralizacao = 10;
+
+		if (Integer.valueOf(aluno.getAnoEntrada()) <= 20132 && Integer.valueOf(aluno.getPeriodoAtual()) > 12) {
+			codigoRetornoIntegralizacao = 0;
 		} else if (Integer.valueOf(aluno.getAnoEntrada()) >= 20141) {
 			if (Integer.valueOf(aluno.getPeriodoAtual()) >= 7) {
 				if (Integer.valueOf(aluno.getPeriodoAtual()) >= 12) {
-					integralizacao = "O aluno não pode mais integralizar o curso.";
-                                        codigoRetornoIntegralizacao = 1;
+					codigoRetornoIntegralizacao = 1;
 				} else {
-					integralizacao = "O aluno deve pedir prorrogação de integralização para o próximo período.";
-                                        codigoRetornoIntegralizacao = 2;
+					codigoRetornoIntegralizacao = 2;
 				}
 			}
 		} else {
-			integralizacao = "A situação de integralização do aluno está normal.";
-                        codigoRetornoIntegralizacao = 3;
+			codigoRetornoIntegralizacao = 3;
 		}
 		return codigoRetornoIntegralizacao;
 	}
@@ -160,22 +154,115 @@ public class VerificadorDasRegras {
 			}
 		}
 		
-		if (contaDisciplinasAprovadas >= 6 && Integer.valueOf(aluno.getPeriodoAtual()) < 3) {
+		boolean segundoPeriodo = Integer.valueOf(aluno.getPeriodoAtual()) < 3; 
+		boolean aprovadoEmMaisDeSeisMaterias = contaDisciplinasAprovadas >= 6;
+		if (aprovadoEmMaisDeSeisMaterias && segundoPeriodo) {
 			return true;
-		} else if (contaDisciplinasAprovadas >= 12 && Integer.valueOf(aluno.getPeriodoAtual()) < 4) {
+		} 
+		
+		boolean terceiroPeriodo = Integer.valueOf(aluno.getPeriodoAtual()) < 4;
+		boolean aprovadoEmMaisDeDozeMaterias = contaDisciplinasAprovadas >= 12;
+		if (aprovadoEmMaisDeDozeMaterias && terceiroPeriodo) {
 			return true;
-		} else if (contaDisciplinasAprovadas >= 19 && Integer.valueOf(aluno.getPeriodoAtual()) < 5) {
-			return true;
-		} else if (contaDisciplinasAprovadas >= 26 && Integer.valueOf(aluno.getPeriodoAtual()) < 6) {
-			return true;
-		} else if (contaDisciplinasAprovadas >= 33 && Integer.valueOf(aluno.getPeriodoAtual()) < 7) {
-			return true;
-		} else if (contaDisciplinasAprovadas >= 39 && Integer.valueOf(aluno.getPeriodoAtual()) < 8) {
-			return true;
-		} else if (contaDisciplinasAprovadas >= 45 && Integer.valueOf(aluno.getPeriodoAtual()) < 9) {
+		} 
+		
+		boolean quartoPeriodo = Integer.valueOf(aluno.getPeriodoAtual()) < 5;
+		boolean aprovadoEmMaisDeDezenoveMaterias = contaDisciplinasAprovadas >= 19;
+		if (aprovadoEmMaisDeDezenoveMaterias && quartoPeriodo) {
 			return true;
 		}
+		
+		boolean aprovadoEmMaisDeVinteSeisMaterias = contaDisciplinasAprovadas >= 26;
+		boolean quintoPeriodo = Integer.valueOf(aluno.getPeriodoAtual()) < 6;
+		if (aprovadoEmMaisDeVinteSeisMaterias && quintoPeriodo) {
+			return true;
+		}
+		
+		
+		boolean aprovadoEmMaisDeTrintaTresMaterias = contaDisciplinasAprovadas >= 33;
+		boolean sextoPeriodo = Integer.valueOf(aluno.getPeriodoAtual()) < 7;
+		if (aprovadoEmMaisDeTrintaTresMaterias && sextoPeriodo) {
+			return true;
+		}
+
+		boolean aprovadoEmMaisDeTrintaNoveMaterias = contaDisciplinasAprovadas >= 39;
+		boolean setimoPeriodo = Integer.valueOf(aluno.getPeriodoAtual()) < 8;
+		if (aprovadoEmMaisDeTrintaNoveMaterias && setimoPeriodo) {
+			return true;
+		}
+		
+		
+		boolean aprovadoEmMaisDeQuarentaCincoMaterias = contaDisciplinasAprovadas >= 45;
+		boolean oitavoPeriodo = Integer.valueOf(aluno.getPeriodoAtual()) < 9;
+		if (aprovadoEmMaisDeQuarentaCincoMaterias && oitavoPeriodo) {
+			return true;
+		}
+		
 		return false;
+	}
+	
+	
+	private void imprimirSextaRegra(boolean crAluno) {
+		if (crAluno) {
+			System.out.println("O CR do aluno é maior que 7,0.");
+		} else {
+			System.out.println("O CR do aluno é menor que 7,0.");
+		}
+	}
+
+	private void imprimirQuintaRegra(boolean condicoesDeSeFormar) {
+		if (condicoesDeSeFormar) {
+			System.out.println("O aluno tem condições de se formar dentro do prazo regular.");
+		} else {
+			System.out.println("O aluno não tem condições de se formar dentro do prazo regular.");
+		}
+	}
+
+	private void imprimirQuartaRegra(boolean materiasPorPeriodo) {
+		if (materiasPorPeriodo) {
+			System.out.println("O aluno está cursando ao menos três disciplinas.");
+		} else {
+			System.out.println("O aluno não está cursando ao menos três disciplinas.");
+		}
+	}
+
+	private void imprimirTerceiraRegra(boolean situacaoNotas) {
+		if (situacaoNotas) {
+			System.out.println("O aluno possui pelo menos nota 5,0 nos semestres definidos no plano de integralização.");
+		} else {
+			System.out.println("O aluno possui pelo menos nota 5,0 nos semestres definidos no plano de integralização.");
+		}
+	}
+
+	private void imprimirSegundaRegra(int integralizarAluno) {
+		if (integralizarAluno == 0) {
+			System.out.println("O aluno deve pedir prorrogação de integralização para o próximo período.");
+		} else if (integralizarAluno == 1) {
+			System.out.println("O aluno não pode mais integralizar o curso.");
+		} else if (integralizarAluno == 2) {
+			System.out.println("O aluno deve pedir prorrogação de integralização para o próximo período.");
+		} else {
+			System.out.println("A situação de integralização do aluno está normal.");
+		}
+	}
+
+	private void imprimirPrimeiraRegra(boolean jubilarAluno) {
+		if (jubilarAluno) {
+			System.out.println("O aluno deve ser jubilado.");
+		} else {
+			System.out.println("O aluno não deve ser jubilado.");
+		}
+	}
+	
+	
+	public void imprimirRegras(boolean jubilarAluno, int integralizarAluno, boolean situacaoNotas,
+			boolean materiasPorPeriodo, boolean condicoesDeSeFormar, boolean crAluno) {
+		imprimirPrimeiraRegra(jubilarAluno);
+        imprimirSegundaRegra(integralizarAluno);
+        imprimirTerceiraRegra(situacaoNotas);
+        imprimirQuartaRegra(materiasPorPeriodo);
+        imprimirQuintaRegra(condicoesDeSeFormar);
+        imprimirSextaRegra(crAluno);
 	}
 
 }

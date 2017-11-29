@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.dom4j.DocumentException;
 
@@ -12,8 +14,6 @@ import br.unirio.ccet.pm.controller.DisciplinaController;
 import br.unirio.ccet.pm.service.ManipuladorDeSvg;
 import br.unirio.ccet.pm.util.ManipuladorDeHistorico;
 import br.unirio.ccet.pm.util.VerificadorDasRegras;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -33,6 +33,7 @@ public class Gerenciador {
             DisciplinaController disciplinaController = new DisciplinaController();
             AlunoController alunoController = new AlunoController();
             ManipuladorDeHistorico pdf = new ManipuladorDeHistorico();
+            ManipuladorDeSvg svg = new ManipuladorDeSvg();
             VerificadorDasRegras regras = new VerificadorDasRegras();
 
             String historicoEscolarExtraido = pdf.extrairHistoricoEscolar(historicoEscolarDocumento);
@@ -45,6 +46,8 @@ public class Gerenciador {
             alunoController.encontrarCRAdoAluno(historicoEscolarRefinado);
             alunoController.encontrarDadosDePeriodoDoAluno(historicoEscolarExtraido);
 
+            svg.manipularSvg(disciplinaController.getInformacaoesDeTodasDisciplinas());
+            
             boolean jubilarAluno = regras.verificarRegraDeAlunoJubilado(disciplinaController.getInformacaoesDeTodasDisciplinas(),
                     alunoController.getAluno());
 
@@ -58,25 +61,17 @@ public class Gerenciador {
                     alunoController.getAluno());
 
             boolean crAluno = regras.verificarCRAAluno(alunoController.getAluno());
+            
+            
+            regras.imprimirRegras(jubilarAluno, integralizarAluno, situacaoNotas, 
+            		materiasPorPeriodo, condicoesDeSeFormar, crAluno);
 
-            System.out.println(jubilarAluno);
-            System.out.println(integralizarAluno);
-            System.out.println(situacaoNotas);
-            System.out.println(materiasPorPeriodo);
-            System.out.println(condicoesDeSeFormar);
-            System.out.println(crAluno);
-
-            System.out.println("");
-
-            for (String codigo : disciplinaController.getInformacaoesDeTodasDisciplinas().keySet()) {
-                System.out.println(disciplinaController.getInformacaoesDeTodasDisciplinas().get(codigo).getCodigo() + " "
-                        + disciplinaController.getInformacaoesDeTodasDisciplinas().get(codigo).getNome() + " "
-                        + disciplinaController.getInformacaoesDeTodasDisciplinas().get(codigo).getMedia() + " "
-                        + disciplinaController.getInformacaoesDeTodasDisciplinas().get(codigo).getSituacao() + " "
-                        + disciplinaController.getInformacaoesDeTodasDisciplinas().get(codigo).getTotalDeReprovacoes());
-            }
         } catch (IOException ex) {
             Logger.getLogger(Gerenciador.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } catch (DocumentException e) {
+        	Logger.getLogger(Gerenciador.class.getName()).log(Level.SEVERE, null, e);
+		}
     }
+
+	
 }

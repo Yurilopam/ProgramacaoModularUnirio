@@ -1,21 +1,24 @@
 package br.unirio.ccet.pm;
 
-import br.unirio.ccet.pm.controller.AlunoController;
-import br.unirio.ccet.pm.controller.DisciplinaController;
-import br.unirio.ccet.pm.model.Aluno;
-import br.unirio.ccet.pm.model.Disciplina;
-import br.unirio.ccet.pm.util.ManipuladorDeHistorico;
-import br.unirio.ccet.pm.util.VerificadorDasRegras;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static junit.framework.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import br.unirio.ccet.pm.controller.AlunoController;
+import br.unirio.ccet.pm.controller.DisciplinaController;
+import br.unirio.ccet.pm.util.ManipuladorDeHistorico;
+import br.unirio.ccet.pm.util.VerificadorDasRegras;
 
 public class VerificadorDasRegrasTest {
 
@@ -73,7 +76,8 @@ public class VerificadorDasRegrasTest {
         assertFalse(vda.verificarCRAAluno(alunoController.getAluno()));
         
     }
-    @Test
+    
+	@Test
     public void verificarSeAoMenos3Disciplinas(){
         assertTrue(vda.verificarSeCursaAoMenosTresDisciplinas(disciplinaController.getInformacaoesDeTodasDisciplinas()));
         
