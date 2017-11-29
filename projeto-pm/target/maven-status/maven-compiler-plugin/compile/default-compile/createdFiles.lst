@@ -1,0 +1,7 @@
+br\unirio\ccet\pm\util\ManipuladorDeHistorico.class
+br\unirio\ccet\pm\model\Disciplina.class
+br\unirio\ccet\pm\controller\DisciplinaController.class
+br\unirio\ccet\pm\model\Aluno.class
+br\unirio\ccet\pm\controller\AlunoController.class
+br\unirio\ccet\pm\util\VerificadorDasRegras.class
+br\unirio\ccet\pm\view\Gerenciador.class

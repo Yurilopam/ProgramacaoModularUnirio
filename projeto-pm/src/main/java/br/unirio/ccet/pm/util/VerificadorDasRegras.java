@@ -14,6 +14,7 @@ public class VerificadorDasRegras {
 	 * 
 	 * @param aluno
 	 *            (Aluno) : aluno que está sendo verificado
+     * @return false se não for jubilado e true se for
 	 * 
 	 */
 	public boolean verificarRegraDeAlunoJubilado(HashMap<String, Disciplina> informacaoesDeDisciplinas, Aluno aluno) {
@@ -42,25 +43,30 @@ public class VerificadorDasRegras {
 	 *            (Aluno) : aluno que está sendo verificado
 	 * 
 	 */
-	public String verificarRegrasDeIntegralizacao(Aluno aluno) {
+	public int verificarRegrasDeIntegralizacao(Aluno aluno) {
 
 		String integralizacao = "";
+                int codigoRetornoIntegralizacao=10;
 		
 		if (Integer.valueOf(aluno.getAnoEntrada()) <= 20132 && 
 				Integer.valueOf(aluno.getPeriodoAtual()) > 12) {
 			integralizacao = "O aluno deve pedir prorrogação de integralização para o próximo período.";
+                        codigoRetornoIntegralizacao= 0;
 		} else if (Integer.valueOf(aluno.getAnoEntrada()) >= 20141) {
 			if (Integer.valueOf(aluno.getPeriodoAtual()) >= 7) {
 				if (Integer.valueOf(aluno.getPeriodoAtual()) >= 12) {
 					integralizacao = "O aluno não pode mais integralizar o curso.";
+                                        codigoRetornoIntegralizacao = 1;
 				} else {
 					integralizacao = "O aluno deve pedir prorrogação de integralização para o próximo período.";
+                                        codigoRetornoIntegralizacao = 2;
 				}
 			}
 		} else {
 			integralizacao = "A situação de integralização do aluno está normal.";
+                        codigoRetornoIntegralizacao = 3;
 		}
-		return integralizacao;
+		return codigoRetornoIntegralizacao;
 	}
 	/**
 	 * Este método verifica se o aluno tem nota para fazer a integralização
