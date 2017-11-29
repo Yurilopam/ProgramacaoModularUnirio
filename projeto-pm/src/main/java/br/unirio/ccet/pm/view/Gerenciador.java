@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.dom4j.DocumentException;
+
 import br.unirio.ccet.pm.controller.AlunoController;
 import br.unirio.ccet.pm.controller.DisciplinaController;
+import br.unirio.ccet.pm.service.ManipuladorDeSvg;
 import br.unirio.ccet.pm.util.ManipuladorDeHistorico;
 import br.unirio.ccet.pm.util.VerificadorDasRegras;
 import java.util.logging.Level;
