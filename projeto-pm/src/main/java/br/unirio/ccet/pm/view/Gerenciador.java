@@ -5,8 +5,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.dom4j.DocumentException;
+
 import br.unirio.ccet.pm.controller.AlunoController;
 import br.unirio.ccet.pm.controller.DisciplinaController;
+import br.unirio.ccet.pm.service.ManipuladorDeSvg;
 import br.unirio.ccet.pm.util.ManipuladorDeHistorico;
 import br.unirio.ccet.pm.util.VerificadorDasRegras;
 
@@ -22,11 +25,12 @@ public class Gerenciador {
 	private static final Path LISTA_DISCIPLINA_PATH = Paths.get(System.getProperty("user.dir"), LISTA_DE_DISCIPLINAS_TXT);
 	private static final Path HISTORIO_ESCOLAR_PATH = Paths.get(System.getProperty("user.dir"), HISTORICO_ESCOLAR_CR_APROVADOS_PDF);
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, DocumentException {
 		final File historicoEscolarDocumento = new File(HISTORIO_ESCOLAR_PATH.toString());
 		DisciplinaController disciplinaController = new DisciplinaController();
 		AlunoController alunoController = new AlunoController();
 		ManipuladorDeHistorico pdf = new ManipuladorDeHistorico();
+		ManipuladorDeSvg svg = new ManipuladorDeSvg();
 		VerificadorDasRegras regras = new VerificadorDasRegras();
 		
 		String historicoEscolarExtraido = pdf.extrairHistoricoEscolar(historicoEscolarDocumento);
@@ -38,6 +42,8 @@ public class Gerenciador {
 		
 		alunoController.encontrarCRAdoAluno(historicoEscolarRefinado);
 		alunoController.encontrarDadosDePeriodoDoAluno(historicoEscolarExtraido);
+		
+		svg.manipularSvg(disciplinaController.getInformacaoesDeTodasDisciplinas());
 		
 		boolean jubilarAluno = regras.verificarRegraDeAlunoJubilado(disciplinaController.getInformacaoesDeTodasDisciplinas(),
 				alunoController.getAluno());
